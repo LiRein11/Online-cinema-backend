@@ -37,7 +37,7 @@ export class AuthService {
 
     const user = await this.UserModel.findById(result._id);
 
-    const tokens = await this.issueTokenPair(String(user._id))
+    const tokens = await this.issueTokenPair(String(user._id));
 
     return {
       user: this.returnUserFields(user),
@@ -59,10 +59,12 @@ export class AuthService {
       password: await hash(dto.password, salt),
     });
 
-    const tokens = await this.issueTokenPair(String(newUser._id));
+    const user = await newUser.save();
+
+    const tokens = await this.issueTokenPair(String(user._id));
 
     return {
-      user: this.returnUserFields(newUser),
+      user: this.returnUserFields(user),
       ...tokens,
     };
   }
@@ -84,11 +86,11 @@ export class AuthService {
   async issueTokenPair(userId: string) {
     const data = { _id: userId };
 
-    const refreshToken = await this.jwtService.signAsync(JSON.stringify(data) , {
+    const refreshToken = await this.jwtService.signAsync(data, {
       expiresIn: '15d',
     });
 
-    const accessToken = await this.jwtService.signAsync(JSON.stringify(data), {
+    const accessToken = await this.jwtService.signAsync(data, {
       expiresIn: '1h',
     });
 
