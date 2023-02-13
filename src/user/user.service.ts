@@ -11,6 +11,12 @@ export class UserService {
     @InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>,
   ) {}
 
+  async bySlug(slug: string) {
+    const doc = await this.UserModel.findOne({ slug }).exec();
+    if (!doc) throw new NotFoundException('User not found');
+    return doc;
+  }
+
   async byId(_id: string) {
     const user = await this.UserModel.findById(_id);
     if (!user) throw new NotFoundException('User not found');
@@ -64,5 +70,5 @@ export class UserService {
 
   async delete(id: string) {
     return this.UserModel.findByIdAndDelete(id).exec();
-  } 
+  }
 }
