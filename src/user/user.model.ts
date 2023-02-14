@@ -1,5 +1,6 @@
-import { prop } from '@typegoose/typegoose';
+import { Ref, prop } from '@typegoose/typegoose';
 import { TimeStamps, Base } from '@typegoose/typegoose/lib/defaultClasses';
+import { MovieModel } from 'src/movie/movie.model';
 
 export interface UserModel extends Base {} // Чтобы айдишник и дата создания, которые сами создаются, были у нас тут
 
@@ -13,6 +14,6 @@ export class UserModel extends TimeStamps {
   @prop({ default: false })
   isAdmin: boolean;
 
-  @prop({ default: [] })
-  favorites?: [];
+  @prop({ default: [], ref: () => MovieModel }) // Ref отдаёт айдишники наших фильмов
+  favorites?: Ref<MovieModel>[];
 } // Model это обычный класс, с определенными декораторами, которые расширяют функционал

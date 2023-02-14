@@ -14,7 +14,7 @@ import { UserModel } from './user.model';
           collection: 'User',
         },
       },
-    ]),
+    ]), 
     ConfigModule,
   ],
   providers: [UserService],
