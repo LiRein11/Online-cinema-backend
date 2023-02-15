@@ -6,6 +6,7 @@ import { RatingModel } from './rating.model';
 import { MovieModule } from 'src/movie/movie.module';
 
 @Module({
+  controllers: [RatingController],  
   imports: [
     TypegooseModule.forFeature([
       {
@@ -17,7 +18,6 @@ import { MovieModule } from 'src/movie/movie.module';
     ]),
     MovieModule, // Импортирование происходит, т.к. какие-то сервисы муви модуля используются в рейтинге
   ],
-  controllers: [RatingController],
   providers: [RatingService],
   exports: [RatingService]
 })

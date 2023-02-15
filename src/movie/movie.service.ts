@@ -4,11 +4,13 @@ import { MovieModel } from './movie.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { UpdateMovieDto } from './update-movie.dto';
 import { Types } from 'mongoose';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 @Injectable()
 export class MovieService {
   constructor(
     @InjectModel(MovieModel) private readonly MovieModel: ModelType<MovieModel>,
+    private readonly telegramService: TelegramService,
   ) {}
 
   async bySlug(slug: string) {
@@ -112,7 +114,10 @@ export class MovieService {
   }
 
   async update(_id: string, dto: UpdateMovieDto) {
-    /* Telegram notification */
+    if (!dto.isSendTelegram) {
+      await this.sendNotification(dto);
+      dto.isSendTelegram = true;
+    }
 
     const updateDoc = await this.MovieModel.findByIdAndUpdate(_id, dto, {
       new: true,
@@ -129,5 +134,29 @@ export class MovieService {
     if (!deleteDoc) throw new NotFoundException('Movie not found');
 
     return deleteDoc;
+  }
+
+  async sendNotification(dto: UpdateMovieDto) {
+    // if (process.env.NODE_ENV !== 'development') {
+    // await this.telegramService.sendPhoto(dto.poster);
+    // }
+    await this.telegramService.sendPhoto(
+      'https://img.osobnosti.cz/film/1072120-john-wick/O763110-6e4ab.jpg',
+    );
+
+    const msg = `<b>${dto.title}</b>`;
+
+    await this.telegramService.sendMessage(msg, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              url: 'https://okko.tv/movie/free-guy',
+              text: 'Go to watch',
+            },
+          ],
+        ],
+      },
+    });
   }
 }

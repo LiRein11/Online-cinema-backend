@@ -33,6 +33,6 @@ export class RatingController {
   @HttpCode(200)
   @Auth()
   async setRating(@User('_id') _id: Types.ObjectId, @Body() dto: setRatingDto) {
-    return this.ratingService.setRating(_id, dto);
+    return this.ratingService.setRating(_id, dto); 
   }
 }
