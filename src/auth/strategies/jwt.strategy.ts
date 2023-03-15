@@ -20,6 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ _id }: Pick<UserModel, '_id'>) {
-    return this.UserModel.findById(_id).exec(); // exec это экзекьют(выполнение) для выполнения запроса
+    const user = await this.UserModel.findById(_id);
+    return user; // exec это экзекьют(выполнение) для выполнения запроса
   } // Пикаем (забираем у UserModel только айдишник как в кавычках и присваиваем части слева)
 }
